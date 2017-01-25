@@ -6,6 +6,7 @@
 #include "GameObject.h"
 #include "InputManager.h"
 #include "EventListener.h"
+#include "Command.h"
 
 /** The game objct whic manages the game loop*/
 class Game:public EventListener
@@ -15,10 +16,16 @@ class Game:public EventListener
 
 	std::vector<GameObject*> gameObjects;
 
-	unsigned int lastTime;//time of last update;
+	bool quit = false;
 
-	bool pause;
-	bool quit;
+	Command* buttonS_;
+	Command* buttonW_;
+	Command* buttonA_;
+	Command* buttonD_;
+	Command* buttonBS_;
+	Command* buttonSpace_;
+
+	unsigned int lastTime;//time of last update;
 
 public:
 	Game();
@@ -27,7 +34,6 @@ public:
 	bool init();
 	void destroy();
 
-	void update();
 	void render();
 	void loop();
 

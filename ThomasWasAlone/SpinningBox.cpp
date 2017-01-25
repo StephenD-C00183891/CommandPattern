@@ -29,7 +29,7 @@ void SpinningBox::Update(unsigned int deltaTime) {
 
 void SpinningBox::onEvent(EventListener::Event evt)
 {
-	if (evt == EventListener::Event::REVERSE) {
+	if (evt == EventListener::Event::LEFT) {
 		angVel *= -1;
 	}
 }

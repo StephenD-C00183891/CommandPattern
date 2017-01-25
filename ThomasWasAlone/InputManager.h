@@ -10,8 +10,9 @@
 
 #include<map>
 #include<vector>
-
+#include <iterator>
 #include "EventListener.h"
+#include "Command.h"
 
 /*Convert input into logical events*/
 class InputManager
@@ -30,5 +31,16 @@ public:
 	void Dispatch(EventListener::Event);
 
 	void ProcessInput();
+
+private:
+
+	Command* buttonSpace_;
+	Command* buttonBS_;
+	Command* buttonA_;
+	Command* buttonS_;
+	Command* buttonW_;
+	Command* buttonD_;
+	MacroCommand* commander;
+
 };
 

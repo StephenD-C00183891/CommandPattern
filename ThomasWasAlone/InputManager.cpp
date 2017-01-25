@@ -1,9 +1,16 @@
 #include "stdafx.h"
 #include "InputManager.h"
-
+#include <iostream>
 
 InputManager::InputManager()
 {
+	buttonSpace_ = new JumpCommand();
+	buttonBS_ = new UndoCommand();
+	buttonS_ = new DownCommand();
+	buttonW_ = new UpCommand();
+	buttonA_ = new LeftCommand();
+	buttonD_ = new RightCommand();
+	commander = new MacroCommand();
 }
 
 
@@ -19,6 +26,8 @@ void InputManager::AddListener(EventListener::Event evt,EventListener *listener)
 
 	listeners[evt]->push_back(listener);
 
+	//buttonSpace_ = new JumpCommand();
+
 }
 
 //Send the events to interested objects
@@ -26,15 +35,12 @@ void InputManager::Dispatch(EventListener::Event evt)
 {
 
 	if (listeners.find(evt) != listeners.end()) {
-		
+
 		for (auto const &listener : *listeners[evt]) { //go through all listeners for this event
 			listener->onEvent(evt); //Call on event for the listener
-
 		}
 	}
-	
 }
-
 
 //Gnereate events
 void InputManager::ProcessInput()
@@ -43,31 +49,67 @@ void InputManager::ProcessInput()
 	while (SDL_PollEvent(&e) != 0)
 	{
 		switch (e.type) {
-			/* Keyboard event */
-			case SDL_KEYDOWN:
-				switch (e.key.keysym.sym) {
-				case SDLK_SPACE:
-					Dispatch(EventListener::Event::PAUSE);
-					break;
-				case SDLK_r:
-					Dispatch(EventListener::Event::REVERSE);
-					break;
 
+		case SDL_KEYDOWN:
+			switch (e.key.keysym.sym) {
+			case SDLK_SPACE:
+				buttonSpace_->execute();
+				commander->commands.push_back(buttonSpace_);
+				//Dispatch(EventListener::Event::SPACE);
+				break;
+			case SDLK_a:
+				buttonA_->execute();
+				commander->commands.push_back(buttonA_);
+				//Dispatch(EventListener::Event::LEFT);
+				break;
+			case SDLK_s:
+				buttonS_->execute();
+				commander->commands.push_back(buttonS_);
+			//	Dispatch(EventListener::Event::DOWN);
+				break;
+			case SDLK_d:
+				buttonD_->execute();
+				commander->commands.push_back(buttonD_);
+				//Dispatch(EventListener::Event::RIGHT);
+				break;
+			case SDLK_w:
+				buttonW_->execute();
+				commander->commands.push_back(buttonW_);
+				//Dispatch(EventListener::Event::UP);
+				break;
+			case SDLK_BACKSPACE:
+			//	buttonBS_->execute();
+				//commander->commands.push_back(buttonW_);
+				for (int i = commander->commands.size(); i > 1; i--)
+				{
+					if (commander->commands[i-1] == buttonSpace_)
+					{
+						std::cout << "Undoing Command : Jump" << std::endl;
+					}
+					else if (commander->commands[i-1] == buttonS_)
+					{
+						std::cout << "Undoing Command : Move Down" << std::endl;
+					}
+					else if (commander->commands[i-1] == buttonA_)
+					{
+						std::cout << "Undoing Command : Move Left" << std::endl;
+					}
+					else if (commander->commands[i-1] == buttonD_)
+					{
+						std::cout << "Undoing Command : Move Right" << std::endl;
+					}
+					else if (commander->commands[i-1] == buttonW_)
+					{
+						std::cout << "Undoing Command : Move Up" << std::endl;
+					}
+					commander->commands.pop_back();
+					break;
 				}
-				break;
-
-			
-			/* SDL_QUIT event (window close) */
-			case SDL_QUIT:
-				Dispatch(EventListener::Event::QUIT);
-				break;
-
-			default:
+				//Dispatch(EventListener::Event::UNDO);
 				break;
 			}
-		
-		
-	
+			break;
+		}
 	}
 	//check for exit
 }
